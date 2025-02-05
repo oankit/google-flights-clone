@@ -107,6 +107,30 @@
 .search-button:hover {
   background-color: #1557b0;
 }
+.flight-card-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 15px;
+}
+
+.airline-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.airline-name {
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.flight-stops {
+  color: #6c757d;
+  font-size: 0.9em;
+}
 
 .flight-card {
   background-color: white;

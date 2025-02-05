@@ -128,47 +128,76 @@ const FlightSearch = () => {
           <>
             <h2 className="results-title">Top departing flights</h2>
             {flights.map((flight, index) => {
-              const airline = flight.legs?.[0]?.carriers?.marketing?.[0]?.name || "Unknown Airline";
-              const price = flight.price?.formatted || "N/A";
+              const legs = flight.legs || [];
+              const segments = legs[0]?.segments || [];
+              const numberOfStops = segments.length - 1;
+              const mainCarrier = flight.legs?.[0]?.carriers?.marketing?.[0];
               
-              const departureDateTime = new Date(flight.legs?.[0]?.departure);
-              const departureTime = departureDateTime.toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-              });
-              const departureDate = departureDateTime.toLocaleDateString('en-US', {
-                month: '2-digit',
-                day: '2-digit',
-                year: 'numeric'
-              });
-              
-              const arrivalDateTime = new Date(flight.legs?.[0]?.arrival);
-              const arrivalTime = arrivalDateTime.toLocaleTimeString('en-US', {
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-              });
-              const arrivalDate = arrivalDateTime.toLocaleDateString('en-US', {
-                month: '2-digit',
-                day: '2-digit',
-                year: 'numeric'
-              });
-
               return (
                 <div key={index} className="flight-card">
-                  <div className="airline-name">{airline}</div>
-                  <div className="flight-info">
-                    <div className="flight-datetime">
-                      <div className="flight-time">{departureTime}</div>
-                      <div className="flight-date">{departureDate}</div>
-                    </div>
-                    <div className="flight-datetime">
-                      <div className="flight-time">{arrivalTime}</div>
-                      <div className="flight-date">{arrivalDate}</div>
+                  <div className="flight-card-header">
+                    {mainCarrier && (
+                      <>
+                        <img 
+                          src={mainCarrier.logoUrl} 
+                          alt={mainCarrier.name}
+                          className="airline-logo"
+                        />
+                        <span className="airline-name">{mainCarrier.name}</span>
+                      </>
+                    )}
+                    <div className="flight-stops">
+                      {numberOfStops === 0 ? 'Direct' : 
+                       numberOfStops === 1 ? '1 stop' : 
+                       `${numberOfStops} stops`}
                     </div>
                   </div>
-                  <div className="flight-price">{price}</div>
+                  
+                  {legs.map((leg, legIndex) => {
+                    const departureDateTime = new Date(leg.departure);
+                    const arrivalDateTime = new Date(leg.arrival);
+                    
+                    const durationMs = arrivalDateTime - departureDateTime;
+                    const hours = Math.floor(durationMs / (1000 * 60 * 60));
+                    const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    return (
+                      <div key={legIndex} className="flight-segment">
+                        <div className="flight-info">
+                          <div className="flight-datetime">
+                            <div className="flight-time">
+                              {departureDateTime.toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })}
+                            </div>
+                            <div className="flight-airport">{leg.origin?.display}</div>
+                          </div>
+
+                          <div className="flight-duration">
+                            <div className="duration-line">
+                              <FaPlane className="plane-icon" />
+                            </div>
+                            <div className="duration-text">{`${hours}h ${minutes}m`}</div>
+                          </div>
+
+                          <div className="flight-datetime">
+                            <div className="flight-time">
+                              {arrivalDateTime.toLocaleTimeString('en-US', {
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true
+                              })}
+                            </div>
+                            <div className="flight-airport">{leg.destination?.display}</div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  
+                  <div className="flight-price">{flight.price?.formatted || "N/A"}</div>
                 </div>
               );
             })}
