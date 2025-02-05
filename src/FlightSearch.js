@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import AirportSearch from './AirportSearch';
+import { FaPlane } from 'react-icons/fa';
 
 const FlightSearch = () => {
   const [origin, setOrigin] = useState(null);
@@ -68,19 +69,28 @@ const FlightSearch = () => {
   
 
   return (
-    <div className="container my-4">
-      <h1 className="mb-4 text-center">Flight Search</h1>
-      <form onSubmit={handleSearch}>
-        <div className="row">
-          <div className="col-md-4">
-            <AirportSearch label="Origin" placeholder="Enter origin" onSelect={setOrigin} />
-          </div>
-          <div className="col-md-4">
-            <AirportSearch label="Destination" placeholder="Enter destination" onSelect={setDestination} />
-          </div>
-          <div className="col-md-4">
-            <div className="mb-3">
-              <label>Travel Date</label>
+    <div className="container py-4">
+      <h1 className="page-title">Find flights</h1>
+      
+      <div className="search-container position-relative">
+        <form onSubmit={handleSearch}>
+          <div className="row g-3">
+            <div className="col-md-4">
+              <label className="form-label">From</label>
+              <AirportSearch 
+                placeholder="Enter city" 
+                onSelect={setOrigin} 
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">To</label>
+              <AirportSearch 
+                placeholder="Enter city" 
+                onSelect={setDestination} 
+              />
+            </div>
+            <div className="col-md-4">
+              <label className="form-label">Date</label>
               <input
                 type="date"
                 className="form-control"
@@ -89,54 +99,79 @@ const FlightSearch = () => {
               />
             </div>
           </div>
+          <div className="search-button-container">
+            <button 
+              type="submit" 
+              className="search-button"
+            >
+              <i className="bi bi-search me-2"></i>
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {error && (
+        <div className="alert alert-danger mt-4" role="alert">
+          {error}
         </div>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <div className="text-center">
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Searching...' : 'Search Flights'}
-          </button>
-        </div>
-      </form>
+      )}
 
-      <div className="row mt-4">
-  {loading && <p className="text-center">Loading flights...</p>}
-  
-  {!loading && flights.length === 0 && (
-    <p className="text-center">No flights found. Try a different search.</p>
-  )}
-
-  {flights.length > 0 &&
-    flights.map((flight, index) => {
-       // ✅ Extract airline name correctly
-       const airline = flight.legs?.[0]?.carriers?.marketing?.[0]?.name || "Unknown Airline";
-      
-       // ✅ Extract price (formatted string)
-       const price = flight.price?.formatted || "N/A";
- 
-       // ✅ Extract flight number (if available)
-       const flightNumber = flight.legs?.[0]?.segments?.[0]?.flightNumber || "N/A";
- 
-
-      // ✅ Extract departure & arrival times
-      const departureTime = flight.legs?.[0]?.departure || "N/A";
-      const arrivalTime = flight.legs?.[0]?.arrival || "N/A";
-
-      return (
-        <div key={index} className="col-md-4 mb-3">
-          <div className="card h-100">
-            <div className="card-body">
-              <h5 className="card-title">{airline}</h5>
-              <p className="card-text">Flight Number: {flightNumber}</p>
-              <p className="card-text">Price: {price}</p>
-              <p className="card-text">Departure: {departureTime}</p>
-              <p className="card-text">Arrival: {arrivalTime}</p>
+      <div className="mt-4">
+        {loading && (
+          <div className="text-center py-5">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div>
-        </div>
-      );
-    })}
-</div>
+        )}
 
+        {flights.map((flight, index) => {
+          const airline = flight.legs?.[0]?.carriers?.marketing?.[0]?.name || "Unknown Airline";
+          const price = flight.price?.formatted || "N/A";
+          
+          const departureDateTime = new Date(flight.legs?.[0]?.departure);
+          const departureTime = departureDateTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          const departureDate = departureDateTime.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+          });
+          
+          const arrivalDateTime = new Date(flight.legs?.[0]?.arrival);
+          const arrivalTime = arrivalDateTime.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          const arrivalDate = arrivalDateTime.toLocaleDateString('en-US', {
+            month: '2-digit',
+            day: '2-digit',
+            year: 'numeric'
+          });
+
+          return (
+            <div key={index} className="flight-card">
+              <div className="airline-name">{airline}</div>
+              <div className="flight-info">
+                <div className="flight-datetime">
+                  <div className="flight-time">{departureTime}</div>
+                  <div className="flight-date">{departureDate}</div>
+                </div>
+                <div className="flight-datetime">
+                  <div className="flight-time">{arrivalTime}</div>
+                  <div className="flight-date">{arrivalDate}</div>
+                </div>
+              </div>
+              <div className="flight-price">{price}</div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

@@ -15,36 +15,33 @@ const AirportSearch = ({ label, placeholder, onSelect }) => {
     }
 
     const fetchAirports = async () => {
-        try {
-          const options = {
-            method: 'GET',
-            url: 'https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport',
-            params: {
-              query: inputValue,  // ✅ Ensure inputValue is correctly passed
-              locale: 'en-US' // ✅ API might require locale
-            },
-            headers: {
-              'x-rapidapi-key': process.env.REACT_APP_RAPIDAPI_KEY, // ✅ Use environment variable
-              'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com'
-            }
-          };
-      
-          console.log("Fetching airports with params:", options.params); // ✅ Log request params
-      
-          const response = await axios.request(options);
-      
-          console.log("API Response:", response.data); // ✅ Log response to check format
-      
-          if (response.data && response.data.data) {
-            setSuggestions(response.data.data);
-          } else {
-            console.warn("No airport results found.");
+      try {
+        const options = {
+          method: 'GET',
+          url: 'https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport',
+          params: {
+            query: inputValue,
+            locale: 'en-US'
+          },
+          headers: {
+            'x-rapidapi-key': process.env.REACT_APP_RAPIDAPI_KEY,
+            'x-rapidapi-host': 'sky-scrapper.p.rapidapi.com'
           }
-        } catch (error) {
-          console.error("Error fetching airports:", error);
+        };
+
+        console.log("Fetching airports with params:", options.params);
+        const response = await axios.request(options);
+        console.log("API Response:", response.data);
+
+        if (response.data && response.data.data) {
+          setSuggestions(response.data.data);
+        } else {
+          console.warn("No airport results found.");
         }
-      };
-      
+      } catch (error) {
+        console.error("Error fetching airports:", error);
+      }
+    };
 
     // Add a debounce delay of 500ms before calling the API
     const delayDebounceFn = setTimeout(() => {
@@ -55,7 +52,7 @@ const AirportSearch = ({ label, placeholder, onSelect }) => {
   }, [inputValue]);
 
   const handleSelect = (airport) => {
-    // Update the input value to the selected airport’s display name
+    // Update the input value to the selected airport's display name
     setInputValue(airport.presentation.suggestionTitle);
     setSuggestions([]);
     if (onSelect) {
@@ -65,7 +62,7 @@ const AirportSearch = ({ label, placeholder, onSelect }) => {
 
   return (
     <div className="mb-3 position-relative">
-      <label>{label}</label>
+      {label && <label className="form-label">{label}</label>}
       <input
         type="text"
         className="form-control"
@@ -74,20 +71,25 @@ const AirportSearch = ({ label, placeholder, onSelect }) => {
         onChange={(e) => setInputValue(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => {
-          // Delay hiding suggestions to allow clicks
           setTimeout(() => setIsFocused(false), 200);
         }}
       />
       {suggestions.length > 0 && isFocused && (
-        <ul className="list-group position-absolute w-100" style={{ zIndex: 1000 }}>
+        <ul className="list-group suggestions-list position-absolute w-100 mt-1" style={{ zIndex: 1000 }}>
           {suggestions.map((airport, index) => (
             <li
               key={index}
-              className="list-group-item list-group-item-action"
+              className="list-group-item suggestion-item"
               onClick={() => handleSelect(airport)}
               style={{ cursor: 'pointer' }}
             >
-              {airport.presentation.suggestionTitle} — {airport.presentation.subtitle}
+              <div className="d-flex align-items-center">
+                <i className="bi bi-airplane me-2"></i>
+                <div>
+                  <div className="fw-medium">{airport.presentation.suggestionTitle}</div>
+                  <small className="text-muted">{airport.presentation.subtitle}</small>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
