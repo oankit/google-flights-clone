@@ -118,59 +118,62 @@ const FlightSearch = () => {
       )}
 
       <div className="mt-4">
-        {loading && (
+        {loading ? (
           <div className="text-center py-5">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
           </div>
-        )}
+        ) : flights.length > 0 ? (
+          <>
+            <h2 className="results-title">Top departing flights</h2>
+            {flights.map((flight, index) => {
+              const airline = flight.legs?.[0]?.carriers?.marketing?.[0]?.name || "Unknown Airline";
+              const price = flight.price?.formatted || "N/A";
+              
+              const departureDateTime = new Date(flight.legs?.[0]?.departure);
+              const departureTime = departureDateTime.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+              });
+              const departureDate = departureDateTime.toLocaleDateString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric'
+              });
+              
+              const arrivalDateTime = new Date(flight.legs?.[0]?.arrival);
+              const arrivalTime = arrivalDateTime.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+              });
+              const arrivalDate = arrivalDateTime.toLocaleDateString('en-US', {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric'
+              });
 
-        {flights.map((flight, index) => {
-          const airline = flight.legs?.[0]?.carriers?.marketing?.[0]?.name || "Unknown Airline";
-          const price = flight.price?.formatted || "N/A";
-          
-          const departureDateTime = new Date(flight.legs?.[0]?.departure);
-          const departureTime = departureDateTime.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-          });
-          const departureDate = departureDateTime.toLocaleDateString('en-US', {
-            month: '2-digit',
-            day: '2-digit',
-            year: 'numeric'
-          });
-          
-          const arrivalDateTime = new Date(flight.legs?.[0]?.arrival);
-          const arrivalTime = arrivalDateTime.toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-          });
-          const arrivalDate = arrivalDateTime.toLocaleDateString('en-US', {
-            month: '2-digit',
-            day: '2-digit',
-            year: 'numeric'
-          });
-
-          return (
-            <div key={index} className="flight-card">
-              <div className="airline-name">{airline}</div>
-              <div className="flight-info">
-                <div className="flight-datetime">
-                  <div className="flight-time">{departureTime}</div>
-                  <div className="flight-date">{departureDate}</div>
+              return (
+                <div key={index} className="flight-card">
+                  <div className="airline-name">{airline}</div>
+                  <div className="flight-info">
+                    <div className="flight-datetime">
+                      <div className="flight-time">{departureTime}</div>
+                      <div className="flight-date">{departureDate}</div>
+                    </div>
+                    <div className="flight-datetime">
+                      <div className="flight-time">{arrivalTime}</div>
+                      <div className="flight-date">{arrivalDate}</div>
+                    </div>
+                  </div>
+                  <div className="flight-price">{price}</div>
                 </div>
-                <div className="flight-datetime">
-                  <div className="flight-time">{arrivalTime}</div>
-                  <div className="flight-date">{arrivalDate}</div>
-                </div>
-              </div>
-              <div className="flight-price">{price}</div>
-            </div>
-          );
-        })}
+              );
+            })}
+          </>
+        ) : null}
       </div>
     </div>
   );

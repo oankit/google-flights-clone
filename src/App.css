@@ -305,3 +305,11 @@ input[type="date"] {
   display: flex;
   align-items: center;
 }
+
+.results-title {
+  font-family: 'Google Sans', Roboto, Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #202124;
+  margin-bottom: 16px;
+}
