@@ -1,3 +1,103 @@
+# Flight Search Application
+
+A modern flight search interface built with React that allows users to search for flights between cities with an intuitive and user-friendly design inspired by popular flight booking platforms.
+
+## Demo
+
+[Watch Demo Video](https://www.loom.com/share/eb391f8444bb4ee885ab18b0124ffbb1?sid=4331cd94-2edf-4538-a1df-1d6f87873f69)
+
+![Flight Search Demo](demo.png)
+
+## Features
+
+- Real-time airport search with autocomplete
+- Flight search with origin, destination, and date selection
+- Display of flight results with detailed information:
+  - Airline details with logos
+  - Flight times and duration
+  - Number of stops
+  - Pricing information
+- Responsive design
+- Modern Google Flights-inspired UI
+- Loading states and error handling
+
+## Technologies Used
+
+- React.js
+- Axios for API requests
+- Bootstrap for styling
+- React Icons
+- Environment variables for API key management
+
+
+## API Integration
+
+This project uses the Sky-Scrapper API from RapidAPI for:
+- Airport search functionality
+- Flight search and results
+
+// ... existing README content ...
+
+## API Integration Details
+
+This project utilizes the Sky-Scrapper API from RapidAPI for flight and airport data. Two main endpoints are used:
+
+### Airport Search API
+- Endpoint: `sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport`
+- Purpose: Provides airport search functionality with autocomplete
+- Features:
+  - Real-time airport suggestions as users type
+  - Returns airport codes, names, and location details
+  - Includes both city and airport information
+
+### Flight Search API
+- Endpoint: `sky-scrapper.p.rapidapi.com/api/v1/flights/searchFlights`
+- Purpose: Searches available flights between selected airports
+- Features:
+  - Searches flights based on origin and destination
+  - Filters by date and cabin class
+  - Returns comprehensive flight details including:
+    - Airlines and flight numbers
+    - Departure/arrival times
+    - Price information
+    - Number of stops
+    - Duration
+
+Note: A RapidAPI key is required to access these endpoints. Set it in your `.env` file as `REACT_APP_RAPIDAPI_KEY`.
+
+
+## Acknowledgments
+
+- Design inspired by Google Flights
+- Icons provided by React Icons
+- Styling framework by Bootstrap
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v12 or higher)
+- npm or yarn
+- RapidAPI key for the Sky-Scrapper API
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/flight-search-app.git
+```
+
+2. Install dependencies
+
+```bash
+npm install
+```
+
+3. Create a `.env` file in the root directory and add your RapidAPI key:
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
