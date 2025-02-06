@@ -6,7 +6,7 @@ A modern flight search interface built with React that allows users to search fo
 
 [Watch Demo Video](https://www.loom.com/share/eb391f8444bb4ee885ab18b0124ffbb1?sid=4331cd94-2edf-4538-a1df-1d6f87873f69)
 
-![Flight Search Demo](demo.png)
+![Flight Search Demo](./public/demo.png)
 
 ## Features
 
